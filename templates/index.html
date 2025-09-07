@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pi Music Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #e6d6f3 0%, #a87dc0 100%);
+            font-family: 'Pacifico', cursive;
+            color: black;
+        }
+
+        .player {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .song-title {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .controls button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .controls button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        audio {
+            width: 300px;
+            margin: 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <div class="title">🎶Pi Lo-Fi Music Player🎶</div>
+        <div class="song-title" id="song-title"></div>
+        <div class="controls">
+            <button onclick="prevSong()"><img src="{{ url_for('static', filename='images/back.png') }}"></button>
+            <audio id="audio" controls></audio>
+            <button onclick="nextSong()"><img src="{{ url_for('static', filename='images/skip.png') }}"></button>
+        </div>
+    </div>
+
+    <script>
+        // List of songs from Flask
+        const songs = [
+            {% for song in songs %}
+            "{{ url_for('static', filename='music/' + song) }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        const songNames = [
+            {% for song in songs %}
+            "{{ song }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        let currentIndex = 0;
+        const audio = document.getElementById('audio');
+        const title = document.getElementById('song-title');
+
+        function loadSong(index) {
+            audio.src = songs[index];
+            let displayName = songNames[index].replace(/\.mp3$/i, '');
+            title.textContent = displayName;
+            audio.play();
+        }
+
+        function playPause() {
+            if (audio.paused) audio.play();
+            else audio.pause();
+        }
+
+        function nextSong() {
+            currentIndex = (currentIndex + 1) % songs.length;
+            loadSong(currentIndex);
+        }
+
+        function prevSong() {
+            currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+            loadSong(currentIndex);
+        }
+
+        // Load first song
+        loadSong(currentIndex);
+    </script>
+</body>
+</html>
