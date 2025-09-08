@@ -66,8 +66,7 @@
     </div>
 
     <script>
-        // List of songs from Flask
-        const songs = [
+        const songs = [ // List of songs from Flask
             {% for song in songs %}
             "{{ url_for('static', filename='music/' + song) }}"{% if not loop.last %},{% endif %}
             {% endfor %}
@@ -85,22 +84,22 @@
 
         function loadSong(index) {
             audio.src = songs[index];
-            let displayName = songNames[index].replace(/\.mp3$/i, '');
+            let displayName = songNames[index].replace(/\.mp3$/i, ''); //edit song title display
             title.textContent = displayName;
             audio.play();
         }
 
         function playPause() {
             if (audio.paused) audio.play();
-            else audio.pause();
+            else audio.pause(); 
         }
 
-        function nextSong() {
+        function nextSong() { //skip function
             currentIndex = (currentIndex + 1) % songs.length;
             loadSong(currentIndex);
         }
 
-        function prevSong() {
+        function prevSong() { //back function
             currentIndex = (currentIndex - 1 + songs.length) % songs.length;
             loadSong(currentIndex);
         }
